@@ -1,7 +1,10 @@
+from datetime import datetime
 from src.services.register import register_service
 from src.models import User
 from unittest import TestCase
 from src import Session
+
+from src.exceptions import AlreadyRegisteredEmail
 
 
 class TestRegisterService(TestCase):
@@ -15,6 +18,18 @@ class TestRegisterService(TestCase):
 
     def setUp(self) -> None:
         self.session = Session()
+        self.registeredEmail = 'aregistered_email@test.com'
+
+        self.session.add(
+            User(
+                '',
+                self.registeredEmail,
+                '',
+                datetime.now()
+            )
+        )
+
+        self.session.commit()
 
     def tearDown(self) -> None:
         self.session.close()
@@ -33,3 +48,18 @@ class TestRegisterService(TestCase):
         persisted_user = self.session.query(
             User).filter_by(email=userData['email']).first()
         self.assertIsNotNone(persisted_user)
+
+    def test_cant_register_user_with_the_same_email(self):
+        '''
+            Call register_service parse an already registered email
+            raises exception
+        '''
+
+        with self.assertRaises(AlreadyRegisteredEmail):
+            register_service(
+                user_data={
+                    'name': '',
+                    'password': '',
+                    'email': self.registeredEmail
+                }
+            )
