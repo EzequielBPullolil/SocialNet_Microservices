@@ -3,6 +3,7 @@ from src.services.register import register_service
 from src.models import User
 from unittest import TestCase
 from src import Session
+from sqlalchemy import text
 
 from src.exceptions import AlreadyRegisteredEmail
 
@@ -28,11 +29,13 @@ class TestRegisterService(TestCase):
                 datetime.now()
             )
         )
-
         self.session.commit()
 
     def tearDown(self) -> None:
-        self.session.close()
+        self.session.execute(
+            text('DELETe FROM "users"')
+        )
+        self.session.commit()
 
     def test_successful_register_service_call_persist_a_user_in_the_database(self):
         '''
