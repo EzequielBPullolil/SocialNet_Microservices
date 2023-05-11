@@ -22,7 +22,7 @@ class TestAuthRoutes:
         '''
           A valid post request for auth_register consists of: 
             fields:
-              name - length > 4
+              name - length >= 4
               password - length > 8 
               email - contain '@'
 
