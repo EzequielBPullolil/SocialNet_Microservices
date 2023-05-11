@@ -24,6 +24,8 @@ class TestRegisterService(TestCase):
             Call register_service function and verify if user was persisted
         '''
         userData = {
+            'name': '',
+            'password': '',
             'email': 'test@email.com'
         }
         register_service(user_data=userData)
