@@ -1,4 +1,5 @@
 import copy
+import json
 from unittest import TestCase
 
 
@@ -31,6 +32,10 @@ class TestAuthRoutes:
         response = client.post('/auth/register', json=self.register_data)
 
         assert response.status_code == 201
+        assert response.content_type == 'application/json'
+        json_response = response.get_json()
+
+        print(json_response)
 
     def test_post_request_auth_register_endpoint_with_invalid_name_response_http_status_400(self, client):
         invalid_name_data = copy.copy(self.register_data)
