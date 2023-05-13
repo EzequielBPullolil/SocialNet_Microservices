@@ -26,16 +26,23 @@ class TestAuthRoutes:
               name - length >= 4
               password - length > 8 
               email - contain '@'
-
         '''
-
         response = client.post('/auth/register', json=self.register_data)
-
+        # Verify status_code and response type
         assert response.status_code == 201
         assert response.content_type == 'application/json'
-        json_response = response.get_json()
 
-        print(json_response)
+        # Verify json response key values
+        json_response = response.get_json()
+        assert 'success' in json_response['status']
+        assert 'User successfully registered' in json_response['message']
+        assert json_response['data'] != None
+
+        # Verify if response_data match with user fields
+        data_response = json_response['data']
+        assert data_response['id'] != None
+        assert data_response['name'] == self.register_data['name']
+        assert data_response['email'] == self.register_data['email']
 
     def test_post_request_auth_register_endpoint_with_invalid_name_response_http_status_400(self, client):
         invalid_name_data = copy.copy(self.register_data)
