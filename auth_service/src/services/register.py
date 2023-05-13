@@ -20,8 +20,10 @@ def register_service(user_data: dict):
                 created_at=datetime.datetime.now())
 
     session = Session()
-
     session.add(user)
     session.commit()
 
+    user_id = user.id
     session.close()
+
+    return user_id
