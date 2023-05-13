@@ -19,6 +19,7 @@ def register():
     '''
     try:
         validate_user_fields(user=request.get_json())
-        return '', 201
+        user_id = register_service(user_data=request.get_json())
+        return {}, 201
     except:
         return '', 400
