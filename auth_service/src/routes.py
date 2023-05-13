@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from .helpers import validate_user_fields
+from .services.register import register_service
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -20,6 +21,14 @@ def register():
     try:
         validate_user_fields(user=request.get_json())
         user_id = register_service(user_data=request.get_json())
-        return {}, 201
+        return {
+            'status': 'success',
+            'message': 'User successfully registered',
+            'data': {
+                'id': user_id,
+                'name': request.get_json()['name'],
+                'email': request.get_json()['email']
+            }
+        }, 201
     except:
         return '', 400
