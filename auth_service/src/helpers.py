@@ -59,7 +59,7 @@ class UserFieldsValidator:
         '''
             Validates if name is not None and have len of 4
         '''
-        if (self.user_fields['name'] == None):
+        if (self.user_fields.get('name') == None):
             self.missing_parameters.append('name')
             raise MissingParameter()
 
@@ -76,7 +76,7 @@ class UserFieldsValidator:
         '''
             Validates if name is not None and have len of 4
         '''
-        if (self.user_fields['password'] == None):
+        if (self.user_fields.get('password') == None):
             self.missing_parameters.append('password')
             raise MissingParameter()
 
@@ -94,7 +94,7 @@ class UserFieldsValidator:
             Validate if email is not empty and
             the email name and domain have length >= 6
         '''
-        if (self.user_fields['email'] == None):
+        if (self.user_fields.get('email') == None):
             self.missing_parameters.append('email')
             raise MissingParameter()
 
