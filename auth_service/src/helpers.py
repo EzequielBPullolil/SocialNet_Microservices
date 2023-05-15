@@ -26,6 +26,7 @@ class EmailValidator:
 
         return email[domain_start:domain_end]
 
+
 class UserFieldsValidator:
     emailValidator = EmailValidator()
 
@@ -52,6 +53,7 @@ class UserFieldsValidator:
         '''
         self.validate_name()
         self.validate_password()
+        self.validate_email()
 
     def validate_name(self):
         '''
@@ -92,6 +94,10 @@ class UserFieldsValidator:
             Validate if email is not empty and
             the email name and domain have length >= 6
         '''
+        if (self.user_fields['email'] == None):
+            self.missing_parameters.append('email')
+            raise MissingParameter()
+
         if (not self.emailValidator.validate_domain(self.user_fields['email'])):
             self.invalid_parameters.append(
                 InvalidParameterInfo(
@@ -101,6 +107,7 @@ class UserFieldsValidator:
                 )
             )
             raise InvalidParameter
+
     def get_invalid_parameters(self):
         '''
             Returns all invalid parameters
