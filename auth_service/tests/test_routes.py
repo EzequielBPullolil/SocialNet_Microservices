@@ -1,6 +1,7 @@
 import copy
-import json
-from unittest import TestCase
+import pytest
+from sqlalchemy import text
+from src import Session
 
 
 class TestAuthRoutes:
@@ -18,6 +19,18 @@ class TestAuthRoutes:
         'password': '12345678',
         'email': 'test@mail.com'
     }
+
+    @pytest.fixture(autouse=True)
+    def before_each(self):
+        '''
+          Delete all rows of users table
+        '''
+        session = Session()
+        session.execute(
+            text('DELETE FROM "users"')
+        )
+        session.commit()
+        session.close()
 
     def test_valid_post_request_for_auth_register_endpoint_response_http_status_201(self, client):
         '''
