@@ -3,7 +3,32 @@ from .exceptions import MissingParameter, InvalidParameter
 from .models import User
 
 
+class EmailValidator:
+    '''
+        Class was validate email
+    '''
+
+    def validate_domain(self, email: str):
+        '''
+            Validates email domain
+        '''
+        return len(self.get_email_domain(email)) >= 6
+
+    def get_email_domain(self, email: str):
+        '''
+            Return email domain
+        '''
+        domain_start = 1 + email.find('@')
+        domain_end = email.find('.')
+
+        if (domain_end == -1 or domain_start == 0):
+            return None
+
+        return email[domain_start:domain_end]
+
 class UserFieldsValidator:
+    emailValidator = EmailValidator()
+
     def __init__(self, user_fields: dict):
         self.user_fields = user_fields
         self.missing_parameters = []
@@ -62,6 +87,20 @@ class UserFieldsValidator:
             )
             raise InvalidParameter()
 
+    def validate_email(self):
+        '''
+            Validate if email is not empty and
+            the email name and domain have length >= 6
+        '''
+        if (not self.emailValidator.validate_domain(self.user_fields['email'])):
+            self.invalid_parameters.append(
+                InvalidParameterInfo(
+                    name='email',
+                    value=self.user_fields['email'],
+                    reason='The field must have a minimum length of 6 in email domain'
+                )
+            )
+            raise InvalidParameter
     def get_invalid_parameters(self):
         '''
             Returns all invalid parameters
