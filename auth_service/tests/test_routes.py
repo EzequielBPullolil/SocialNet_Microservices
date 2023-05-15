@@ -143,3 +143,14 @@ class TestAuthRoutes:
         response = client.post('/auth/register', json=invalid_password_data)
         assert response.status_code == 400
         assert response.content_type == 'application/json'
+        json_response = response.get_json()
+
+        assert 'error' in json_response['status']
+        assert 'Bad request, At least one parameter is invalid' in json_response['message']
+        assert json_response['invalid_parameters'] == [
+            {
+                'name': 'password',
+                'value': '1234567',
+                'reason': 'The field must have a minimum length of 8',
+            }
+        ]
