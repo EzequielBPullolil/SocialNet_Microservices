@@ -211,3 +211,14 @@ class TestAuthRoutes:
                 'reason': 'The field must have a minimum length of 6 in email domain',
             }
         ]
+
+        # Verify missing email error response
+        del invalid_email_data['email']
+        response = client.post('/auth/register', json=invalid_email_data)
+        assert response.status_code == 400
+        assert response.content_type == 'application/json'
+        json_response = response.get_json()
+
+        assert 'error' in json_response['status']
+        assert 'Bad request, Missing at least one parameter' in json_response['message']
+        assert ['email'] == json_response['missing_parameters']
