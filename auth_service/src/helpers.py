@@ -49,6 +49,10 @@ class UserFieldsValidator:
         '''
             Validates if name is not None and have len of 4
         '''
+        if (self.user_fields['password'] == None):
+            self.missing_parameters.append('password')
+            raise MissingParameter()
+
         if (len(self.user_fields['password']) < 8):
             self.invalid_parameters.append(
                 InvalidParameterInfo(

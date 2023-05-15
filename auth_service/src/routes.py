@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from src.exceptions import RequestExceptions
 from .helpers import UserFieldsValidator
 from .services.register import register_service
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -31,7 +32,7 @@ def register():
                 'email': request.get_json()['email']
             }
         }, 201
-    except Exception as excep_inf:
+    except RequestExceptions as excep_inf:
         return {
             'status': 'error',
             'message': excep_inf.message,
