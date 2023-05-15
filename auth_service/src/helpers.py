@@ -26,6 +26,7 @@ class UserFieldsValidator:
             Raises: [MissingParameter, InvalidParameter] 
         '''
         self.validate_name()
+        self.validate_password()
 
     def validate_name(self):
         '''
@@ -41,6 +42,19 @@ class UserFieldsValidator:
                     name='name',
                     value=self.user_fields['name'],
                     reason='The field must have a minimum length of 4')
+            )
+            raise InvalidParameter()
+
+    def validate_password(self):
+        '''
+            Validates if name is not None and have len of 4
+        '''
+        if (len(self.user_fields['password']) < 8):
+            self.invalid_parameters.append(
+                InvalidParameterInfo(
+                    name='password',
+                    value=self.user_fields['password'],
+                    reason='The field must have a minimum length of 8')
             )
             raise InvalidParameter()
 
