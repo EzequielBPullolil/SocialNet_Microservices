@@ -34,10 +34,13 @@ class TestAuthRoutes:
 
     def test_valid_post_request_for_auth_register_endpoint_response_http_status_201(self, client):
         '''
+          Verify if a valid post request response with the following expected
+          data: status, message and data
+
           A valid post request for auth_register consists of: 
             fields:
               name - length >= 4
-              password - length > 8 
+              password - length >= 8 
               email - contain '@'
         '''
         response = client.post('/auth/register', json=self.register_data)
@@ -154,3 +157,14 @@ class TestAuthRoutes:
                 'reason': 'The field must have a minimum length of 8',
             }
         ]
+
+        # Verify missing name error response
+        invalid_password_data['password'] = None
+        response = client.post('/auth/register', json=invalid_password_data)
+        assert response.status_code == 400
+        assert response.content_type == 'application/json'
+        json_response = response.get_json()
+
+        assert 'error' in json_response['status']
+        assert 'Bad request, Missing at least one parameter' in json_response['message']
+        assert ['password'] == json_response['missing_parameters']
