@@ -1,10 +1,12 @@
 from . import Session
+from .exceptions import MissingParameter, InvalidParameter
 from .models import User
 
 
 class UserFieldsValidator:
     def __init__(self, user_fields: dict):
         self.user_fields = user_fields
+        self.missing_parameters = []
         self.invalid_parameters = []
 
     def validate_fields(self):
@@ -29,6 +31,10 @@ class UserFieldsValidator:
         '''
             Validates if name is not None and have len of 4
         '''
+        if (self.user_fields['name'] == None):
+            self.missing_parameters.append('name')
+            raise MissingParameter()
+
         if (len(self.user_fields['name']) < 4):
             self.invalid_parameters.append(
                 InvalidParameterInfo(
@@ -43,6 +49,21 @@ class UserFieldsValidator:
             Returns all invalid parameters
         '''
         return self.invalid_parameters
+
+    def get_missing_parameters(self):
+        return self.missing_parameters
+
+
+def InvalidParameterInfo(name: str, value: str, reason: str) -> dict:
+    '''
+        Describes why the parameter are invalid
+    '''
+    return {
+        'name': name,
+        'value': value,
+        'reason': reason
+    }
+
 
 def is_registered_email(email):
     '''

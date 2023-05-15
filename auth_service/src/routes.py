@@ -35,5 +35,6 @@ def register():
         return {
             'status': 'error',
             'message': excep_inf.message,
-            'invalid_parameters': user_fields_validator.get_invalid_parameters()
-        },
+            'invalid_parameters': user_fields_validator.get_invalid_parameters(),
+            'missing_parameters': user_fields_validator.get_missing_parameters()
+        }, 400
