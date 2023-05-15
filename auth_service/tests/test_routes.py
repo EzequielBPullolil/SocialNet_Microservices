@@ -105,7 +105,7 @@ class TestAuthRoutes:
         ]
 
         # Verify missing name error response
-        invalid_name_data['name'] = None
+        del invalid_name_data['name']
         response = client.post('/auth/register', json=invalid_name_data)
         assert response.status_code == 400
         assert response.content_type == 'application/json'
@@ -159,7 +159,7 @@ class TestAuthRoutes:
         ]
 
         # Verify missing name error response
-        invalid_password_data['password'] = None
+        del invalid_password_data['password']
         response = client.post('/auth/register', json=invalid_password_data)
         assert response.status_code == 400
         assert response.content_type == 'application/json'
