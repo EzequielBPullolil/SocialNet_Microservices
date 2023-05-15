@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .helpers import validate_user_fields
+from .helpers import UserFieldsValidator
 from .services.register import register_service
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -18,8 +18,9 @@ def register():
             - email (str): user email
                 * contains '@'
     '''
+    user_fields_validator = UserFieldsValidator(user_fields=request.get_json())
     try:
-        validate_user_fields(user=request.get_json())
+        user_fields_validator.validate_fields()
         user_id = register_service(user_data=request.get_json())
         return {
             'status': 'success',
@@ -30,5 +31,9 @@ def register():
                 'email': request.get_json()['email']
             }
         }, 201
-    except:
-        return '', 400
+    except Exception as excep_inf:
+        return {
+            'status': 'error',
+            'message': excep_inf.message,
+            'invalid_parameters': user_fields_validator.get_invalid_parameters()
+        },
