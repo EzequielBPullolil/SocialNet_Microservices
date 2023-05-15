@@ -17,7 +17,7 @@ class TestAuthRoutes:
     register_data = {
         'name': 'Alan',
         'password': '12345678',
-        'email': 'test@mail.com'
+        'email': 'test23@mail23.com'
     }
 
     @pytest.fixture(autouse=True)
@@ -194,7 +194,7 @@ class TestAuthRoutes:
             'invalid_parameters':'',
           }
         '''
-        # Verify invalid name error response
+        # Verify invalid email error response
         invalid_email_data = copy.copy(self.register_data)
         invalid_email_data['email'] = 'abcdfg@a.com'
         response = client.post('/auth/register', json=invalid_email_data)
@@ -207,7 +207,7 @@ class TestAuthRoutes:
         assert json_response['invalid_parameters'] == [
             {
                 'name': 'email',
-                'value': '1234567',
-                'reason': 'The field must have a minimum length of 8',
+                'value': 'abcdfg@a.com',
+                'reason': 'The field must have a minimum length of 6 in email domain',
             }
         ]
