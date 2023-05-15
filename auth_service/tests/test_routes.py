@@ -70,11 +70,23 @@ class TestAuthRoutes:
           }
         '''
 
+        # Verify invalid name error response
         invalid_name_data = copy.copy(self.register_data)
         invalid_name_data['name'] = 'a'
         response = client.post('/auth/register', json=invalid_name_data)
-
         assert response.status_code == 400
+        assert response.content_type == 'application/json'
+        json_response = response.get_json()
+
+        assert 'error' in json_response['status']
+        assert 'Bad request, At least one parameter is invalid' in json_response['message']
+        assert json_response['invalid_parameters'] == [
+            {
+                'name': 'name',
+                'value': 'a',
+                'reason': 'The field must have a minimum length of 4'
+            }
+        ]
 
         invalid_name_data['name'] = ''
         response = client.post('/auth/register', json=invalid_name_data)
