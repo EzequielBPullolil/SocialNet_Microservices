@@ -16,3 +16,19 @@ class TestValidateUserSchema:
         }
 
         validate_user_schema(valid_schema)
+
+    def test_invalid_name_raise_error(self):
+        '''
+            Verify if parse an schema with short nname raise
+            exception and the error message is the expected
+        '''
+        shcema_with_invalid_name = {
+            'name': 'Ale',
+            'password': 'abdfghi#',  # >= 8 length
+            'email': 'an_email@test.com'
+        }
+        with pytest.raises(InvalidEschema) as e_info:
+            validate_user_schema(shcema_with_invalid_name)
+
+        name_message = e_info.value.invalid_params['name']
+        assert 'The name field must have at least 4 characters' in name_message['message']
