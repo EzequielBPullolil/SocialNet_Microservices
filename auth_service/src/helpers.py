@@ -152,8 +152,11 @@ def invalid_params_message(errors) -> dict:
     for error in errors:
         if ('name' in error.path):
             message['name'] = invalid_name_message(error)
+        if ('password' in error.path):
+            message['password'] = invalid_password_message(error)
         if ('email' in error.path):
             message['email'] = invalid_email_message(error)
+
     return message
 
 def invalid_email_message(email) -> dict:
