@@ -168,6 +168,13 @@ def invalid_email_message(email) -> dict:
         email_message['message'] = 'Invalid email format'
 
     return email_message
+def invalid_password_message(password) -> dict:
+    '''
+        Describes custom message for invalid password
+    '''
+    password_message = {}
+    if ('anyOf' in str(password.validator)):
+        password_message['message'] = 'The password field must have at least 1 symbol or at least 1 number'
 def invalid_name_message(name) -> dict:
     '''
         Describes custom message for invalid name
