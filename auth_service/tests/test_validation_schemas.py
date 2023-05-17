@@ -17,6 +17,30 @@ class TestValidateUserSchema:
 
         validate_user_schema(valid_schema)
 
+    def test_full_invalid_user_schema(self):
+        '''
+            Check if passing a complete invalid user_schema
+            raises an exception with the detail of all invalid fields
+        '''
+
+        full_invalid_schema = {
+            'name': 'ale',  # short username
+            'password': 'abdfghia',  # Not symbol and number field
+            'email': 'userexamplecom'  # no valid email
+        }
+
+        with pytest.raises(InvalidEschema) as e_info:
+            validate_user_schema(full_invalid_schema)
+
+        invalid_params = e_info.value.invalid_params
+        name_message = invalid_params['name']['message']
+        password_message = invalid_params['password']['message']
+        email_message = invalid_params['email']['message']
+
+        assert name_message == 'The name field must have at least 4 characters'
+        assert password_message == 'The password field must have at least 1 symbol or at least 1 number'
+        assert email_message == 'Invalid email format'
+
     def test_invalid_name_raise_error(self):
         '''
             Verify if parse an schema with short nname raise
@@ -61,6 +85,7 @@ class TestValidateUserSchema:
         password_message = e_info.value.invalid_params['password']
         assert 'The password field must have at least 8 characters' in password_message[
             'message']
+
     def test_invalid_email_raise_error(self):
         '''
             Verify if parse an schema with invalid email raise InvalidEschema
