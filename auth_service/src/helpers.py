@@ -175,6 +175,8 @@ def invalid_password_message(password) -> dict:
     password_message = {}
     if ('anyOf' in str(password.validator)):
         password_message['message'] = 'The password field must have at least 1 symbol or at least 1 number'
+    return password_message
+
 def invalid_name_message(name) -> dict:
     '''
         Describes custom message for invalid name
