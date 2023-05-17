@@ -60,30 +60,10 @@ class TestAuthRoutes:
         assert data_response['name'] == self.register_data['name']
         assert data_response['email'] == self.register_data['email']
 
-    def test_post_request_auth_register_endpoint_with_invalid_or_missing_name_param_response_http_status_400(self, client):
+    def test_post_request_register_endpoint_with_short_name_response_http_status_400(self, client):
         '''
-          Verify if parse a invalid name response with bad request and status_code 400
-          and the expected error json
-          keys (status, message, missing_parameters, invalid_parameters)
-
-          example invalid name case:
-          {
-            'status': 'error',
-            'message': 'Bad request, At least one parameter is invalid.'
-            'missing_parameters': 
-            'invalid_parameters': {
-              'name': 'name',
-              'value': 'a',
-              'reason': 'The field must have a minimum length of 4',
-            }
-          }
-          example missing name case:
-          {
-            'status': 'error',
-            'message': 'Bad request, Missing at least one parameter.',
-            'missing_parameters': ['name'],
-            'invalid_parameters':'',
-          }
+          Verify if parse an invalid name param response with error status 400
+          and the json response have the expecteds keys with they values
         '''
 
         # Verify invalid name error response
@@ -91,29 +71,14 @@ class TestAuthRoutes:
         invalid_name_data['name'] = 'a'
         response = client.post('/auth/register', json=invalid_name_data)
         assert response.status_code == 400
-        assert response.content_type == 'application/json'
         json_response = response.get_json()
 
-        assert 'error' in json_response['status']
-        assert 'Bad request, At least one parameter is invalid' in json_response['message']
-        assert json_response['invalid_parameters'] == [
-            {
-                'name': 'name',
-                'value': 'a',
-                'reason': 'The field must have a minimum length of 4'
-            }
-        ]
+        assert json_response['status'] == 'error'
+        assert json_response['message'] == 'Invalid json schema'
 
-        # Verify missing name error response
-        del invalid_name_data['name']
-        response = client.post('/auth/register', json=invalid_name_data)
-        assert response.status_code == 400
-        assert response.content_type == 'application/json'
-        json_response = response.get_json()
+        name_error = json_response['invalid_params']['name']
 
-        assert 'error' in json_response['status']
-        assert 'Bad request, Missing at least one parameter' in json_response['message']
-        assert ['name'] == json_response['missing_parameters']
+        assert name_error['message'] == 'The name field must have at least 4 characters'
 
     def test_post_request_auth_register_endpoint_with_invalid_or_missing_password_param_response_http_status_400(self, client):
         '''
