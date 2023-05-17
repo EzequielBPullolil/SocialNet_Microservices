@@ -145,11 +145,22 @@ def is_registered_email(email):
 
 def invalid_params_message(errors) -> dict:
     '''
-        Returns an dict of the params and
-        they detailed errors
+        Describes an dict of all the invalid params
+        and they detailed errors
     '''
     message = {}
     for error in errors:
         if ('name' in error.path):
             message['name'] = invalid_name_message(error)
     return message
+
+def invalid_name_message(name) -> dict:
+    '''
+        Describes custom message for invalid name
+    '''
+    name_message = {}
+
+    if ('minLength' in str(name.validator)):
+        name_message['message'] = 'The name field must have at least 4 characters'
+
+    return name_message
