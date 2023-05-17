@@ -1,3 +1,9 @@
+import jsonschema
+
+from src.exceptions import InvalidEschema
+from src.helpers import invalid_params_message
+
+
 user_schema = {
     "type": "object",
     "properties": {
@@ -24,3 +30,21 @@ user_schema = {
     },
     "required": ["name", "email", "password"],
 }
+
+validator = jsonschema.Draft7Validator(user_schema)
+
+
+def validate_user_schema(instance):
+    '''
+        Validates user schema usig jsonchema validate
+        if the schema is invalid raises exception with 
+        custom error messages
+        raises InvalidSchema
+    '''
+
+    try:
+        validator.validate(instance)
+    except jsonschema.exceptions.ValidationError:
+        errors = list(validator.iter_errors(instance))
+        invalid_params = invalid_params_message(errors)
+        raise InvalidEschema(invalid_params)
