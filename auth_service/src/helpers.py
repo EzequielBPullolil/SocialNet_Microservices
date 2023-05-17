@@ -152,8 +152,19 @@ def invalid_params_message(errors) -> dict:
     for error in errors:
         if ('name' in error.path):
             message['name'] = invalid_name_message(error)
+        if ('email' in error.path):
+            message['email'] = invalid_email_message(error)
     return message
 
+def invalid_email_message(email) -> dict:
+    '''
+            Describes custom message for invalid password
+    '''
+    email_message = {}
+    if ('pattern' in str(email.validator)):
+        email_message['message'] = 'Invalid email format'
+
+    return email_message
 def invalid_name_message(name) -> dict:
     '''
         Describes custom message for invalid name
