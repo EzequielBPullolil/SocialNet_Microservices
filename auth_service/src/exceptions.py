@@ -12,3 +12,9 @@ class MissingParameter(RequestExceptions):
 
 class InvalidParameter(RequestExceptions):
     message = 'Bad request, At least one parameter is invalid'
+
+
+class InvalidEschema(RequestExceptions):
+    def __init__(self, invalid_params, *args: object) -> None:
+        super().__init__(*args)
+        self.invalid_params = invalid_params
