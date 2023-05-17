@@ -141,3 +141,15 @@ def is_registered_email(email):
     return (
         response != None
     )
+
+
+def invalid_params_message(errors) -> dict:
+    '''
+        Returns an dict of the params and
+        they detailed errors
+    '''
+    message = {}
+    for error in errors:
+        if ('name' in error.path):
+            message['name'] = invalid_name_message(error)
+    return message
