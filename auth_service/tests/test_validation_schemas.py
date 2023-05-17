@@ -52,6 +52,15 @@ class TestValidateUserSchema:
         password_message = e_info.value.invalid_params['password']
         assert 'The password field must have at least 1 symbol or at least 1 number' in password_message[
             'message']
+
+        # sets a password with invalid length but with symbols
+        schema_with_invalid_password['password'] = 'abcdf#'
+        with pytest.raises(InvalidEschema) as e_info:
+            validate_user_schema(schema_with_invalid_password)
+
+        password_message = e_info.value.invalid_params['password']
+        assert 'The password field must have at least 8 characters' in password_message[
+            'message']
     def test_invalid_email_raise_error(self):
         '''
             Verify if parse an schema with invalid email raise InvalidEschema
