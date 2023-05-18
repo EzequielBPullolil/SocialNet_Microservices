@@ -1,4 +1,5 @@
 from datetime import datetime
+from src.helpers import PasswordManager
 from src.services.register import register_service
 from src.models import User
 from unittest import TestCase
@@ -30,6 +31,7 @@ class TestRegisterService(TestCase):
             )
         )
         self.session.commit()
+        self.password_manager = PasswordManager()
 
     def tearDown(self) -> None:
         self.session.execute(
