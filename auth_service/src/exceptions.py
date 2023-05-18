@@ -15,6 +15,7 @@ class InvalidParameter(RequestExceptions):
 
 
 class InvalidEschema(RequestExceptions):
-    def __init__(self, invalid_params, *args: object) -> None:
+    def __init__(self, invalid_params, missing_params, *args: object) -> None:
         super().__init__(*args)
         self.invalid_params = invalid_params
+        self.missing_params = missing_params

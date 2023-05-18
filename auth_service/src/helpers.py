@@ -143,6 +143,17 @@ def is_registered_email(email):
     )
 
 
+def missing_params_message(error) -> dict:
+    '''
+        Describes all the required params was
+        missing
+    '''
+    missing_params = []
+    if ('name' in error.message):
+        missing_params.append('name')
+    return missing_params
+
+
 def invalid_params_message(errors) -> dict:
     '''
         Describes an dict of all the invalid params
@@ -190,6 +201,8 @@ def invalid_name_message(name) -> dict:
     name_message = {}
 
     if ('minLength' in str(name.validator)):
+        name_message['message'] = 'The name field must have at least 4 characters'
+    if ('required' in str(name.validator)):
         name_message['message'] = 'The name field must have at least 4 characters'
 
     return name_message
