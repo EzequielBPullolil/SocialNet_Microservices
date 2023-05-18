@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.helpers import PasswordManager
+from src.helpers.password_manager import PasswordManager
 from src.services.register import register_service
 from src.models import User
 from unittest import TestCase
