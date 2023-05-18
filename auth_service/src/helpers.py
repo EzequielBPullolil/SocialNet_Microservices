@@ -5,17 +5,6 @@ from .exceptions import MissingParameter, InvalidParameter
 from .models import User
 
 
-def InvalidParameterInfo(name: str, value: str, reason: str) -> dict:
-    '''
-        Describes why the parameter are invalid
-    '''
-    return {
-        'name': name,
-        'value': value,
-        'reason': reason
-    }
-
-
 def is_registered_email(email):
     '''
       Return if exist an user registered with email
