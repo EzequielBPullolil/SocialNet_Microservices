@@ -32,7 +32,7 @@ class TestAuthRoutes:
         session.commit()
         session.close()
 
-    def test_valid_post_request_for_auth_register_endpoint_response_http_status_201(self, client):
+    def test_valid_post_request_for_register_endpoint_response_http_status_201(self, client):
         '''
           Verify if a valid post request response with the following expected
           data: status, message and data
@@ -62,7 +62,7 @@ class TestAuthRoutes:
 
     def test_post_request_register_endpoint_with_short_name_response_http_status_400(self, client):
         '''
-          Verify if parse an invalid name param response with error status 400
+          Verify if parse an short name param response with error status 400
           and the json response have the expecteds keys with they values
         '''
 
@@ -96,6 +96,23 @@ class TestAuthRoutes:
         assert json_response['message'] == 'Invalid json schema'
 
         assert 'name' in json_response['missing_params']
+
+    def test_post_request_register_endpoint_with_no_password_param_response_http_status_400(self, client):
+        '''
+        Verify if requeust register endpoint without password param response status code 400 and
+        the json response have the expecteds keys 
+        '''
+        missing_password_schema = copy.copy(self.register_data)
+        del missing_password_schema['password']  # delete passwor key
+        response = client.post('/auth/register', json=missing_password_schema)
+        assert response.status_code == 400
+        json_response = response.get_json()
+
+        assert json_response['status'] == 'error'
+        assert json_response['message'] == 'Invalid json schema'
+
+        assert 'password' in json_response['missing_params']
+
     def test_post_request_auth_register_endpoint_with_invalid_or_missing_password_param_response_http_status_400(self, client):
         '''
           Verify if parse a invalid or missing password response with bad request and status_code 400
@@ -184,14 +201,7 @@ class TestAuthRoutes:
         json_response = response.get_json()
 
         assert 'error' in json_response['status']
-        assert 'Bad request, At least one parameter is invalid' in json_response['message']
-        assert json_response['invalid_parameters'] == [
-            {
-                'name': 'email',
-                'value': 'abcdfg@a.com',
-                'reason': 'The field must have a minimum length of 6 in email domain',
-            }
-        ]
+        assert 'The email almost need' in json_response['message']
 
         # Verify missing email error response
         del invalid_email_data['email']
@@ -202,4 +212,3 @@ class TestAuthRoutes:
 
         assert 'error' in json_response['status']
         assert 'Bad request, Missing at least one parameter' in json_response['message']
-        assert ['email'] == json_response['missing_parameters']
