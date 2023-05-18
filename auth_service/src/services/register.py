@@ -3,7 +3,8 @@ from src import Session
 from src.models import User
 import datetime
 
-from src.helpers import is_registered_email, PasswordManager
+from src.helpers.email_manager import EmailManager
+from src.helpers.password_manager import PasswordManager
 
 
 def register_service(user_data: dict):
@@ -12,7 +13,8 @@ def register_service(user_data: dict):
         to database
     '''
     password_manager = PasswordManager()
-    if (is_registered_email(user_data['email'])):
+    email_manager = EmailManager()
+    if (not email_manager.is_avaible_the_email(user_data['email'])):
         raise AlreadyRegisteredEmail()
 
     encrypted_password = password_manager.encrypt_password(
