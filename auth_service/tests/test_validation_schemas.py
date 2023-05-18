@@ -101,3 +101,13 @@ class TestValidateUserSchema:
             validate_user_schema(schema_with_invalid_email)
 
         assert e_info.value.invalid_params['email']['message'] == 'Invalid email format'
+
+    def test_missing_name_raise_error(self):
+        shcema_with_invalid_name = {
+            'password': 'abdfghi#',  # >= 8 length
+            'email': 'an_email@test.com'
+        }
+        with pytest.raises(InvalidEschema) as e_info:
+            validate_user_schema(shcema_with_invalid_name)
+
+        assert 'name' in e_info.value.missing_params
