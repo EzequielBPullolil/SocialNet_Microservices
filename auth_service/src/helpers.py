@@ -154,6 +154,9 @@ def missing_params_message(error) -> dict:
 
     if ('password' in error.message):
         missing_params.append('password')
+
+    if ('email' in error.message):
+        missing_params.append('email')
     return missing_params
 
 
