@@ -80,6 +80,22 @@ class TestAuthRoutes:
 
         assert name_error['message'] == 'The name field must have at least 4 characters'
 
+    def test_post_request_register_endpoint_with_no_name_param_response_http_status_400(self, client):
+        '''
+        Verify if request register endpoint with no name param response status code 400
+        and the json response have the expecteds keys with they values
+        '''
+
+        invalid_name_data = copy.copy(self.register_data)
+        del invalid_name_data['name']  # delete name key
+        response = client.post('/auth/register', json=invalid_name_data)
+        assert response.status_code == 400
+        json_response = response.get_json()
+
+        assert json_response['status'] == 'error'
+        assert json_response['message'] == 'Invalid json schema'
+
+        assert 'name' in json_response['missing_params']
     def test_post_request_auth_register_endpoint_with_invalid_or_missing_password_param_response_http_status_400(self, client):
         '''
           Verify if parse a invalid or missing password response with bad request and status_code 400
