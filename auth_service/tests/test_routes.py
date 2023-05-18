@@ -16,7 +16,7 @@ class TestAuthRoutes:
     '''
     register_data = {
         'name': 'Alan',
-        'password': '12345678',
+        'password': 'abcdfga#',
         'email': 'test23@mail23.com'
     }
 
