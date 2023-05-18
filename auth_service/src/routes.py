@@ -1,6 +1,7 @@
+
+from src.exceptions import InvalidEschema
+from src.validation_schemas import validate_user_schema
 from flask import Blueprint, request
-from src.exceptions import RequestExceptions
-from .helpers import UserFieldsValidator
 from .services.register import register_service
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -19,9 +20,8 @@ def register():
             - email (str): user email
                 * contains '@'
     '''
-    user_fields_validator = UserFieldsValidator(user_fields=request.get_json())
     try:
-        user_fields_validator.validate_fields()
+        validate_user_schema(request.get_json())
         user_id = register_service(user_data=request.get_json())
         return {
             'status': 'success',
@@ -32,10 +32,11 @@ def register():
                 'email': request.get_json()['email']
             }
         }, 201
-    except RequestExceptions as excep_inf:
+    except InvalidEschema as excep_inf:
         return {
             'status': 'error',
-            'message': excep_inf.message,
-            'invalid_parameters': user_fields_validator.get_invalid_parameters(),
-            'missing_parameters': user_fields_validator.get_missing_parameters()
+            'message': 'Invalid json schema',
+            'invalid_params': excep_inf.invalid_params,
+            'missing_params': excep_inf.missing_params
+
         }, 400
