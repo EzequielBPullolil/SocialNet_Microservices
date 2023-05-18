@@ -40,7 +40,7 @@ class TestAuthRoutes:
           A valid post request for auth_register consists of: 
             fields:
               name - length >= 4
-              password - length >= 8 
+              password - length >= 8 with numbers, symbols or characters
               email - contain '@'
         '''
         response = client.post('/auth/register', json=self.register_data)
@@ -60,25 +60,25 @@ class TestAuthRoutes:
         assert data_response['name'] == self.register_data['name']
         assert data_response['email'] == self.register_data['email']
 
-    def test_post_request_register_endpoint_with_short_name_response_http_status_400(self, client):
+    def test_post_request_register_endpoint_with_short_password_response_http_status_400(self, client):
         '''
-          Verify if parse an short name param response with error status 400
-          and the json response have the expecteds keys with they values
+        Verify if parse an short password response with status code 400 and
+        the expected json response
         '''
+        data_with_short_password = copy.copy(self.register_data)
+        data_with_short_password['password'] = 'abcdf#3'  # password length < 8
 
-        # Verify invalid name error response
-        invalid_name_data = copy.copy(self.register_data)
-        invalid_name_data['name'] = 'a'
-        response = client.post('/auth/register', json=invalid_name_data)
+        response = client.post('/auth/register', json=data_with_short_password)
+
         assert response.status_code == 400
         json_response = response.get_json()
 
         assert json_response['status'] == 'error'
         assert json_response['message'] == 'Invalid json schema'
 
-        name_error = json_response['invalid_params']['name']
+        password_error = json_response['invalid_params']['password']
 
-        assert name_error['message'] == 'The name field must have at least 4 characters'
+        assert password_error['message'] == 'The password field must have at least 8 characters'
 
     def test_post_request_register_endpoint_with_no_name_param_response_http_status_400(self, client):
         '''
