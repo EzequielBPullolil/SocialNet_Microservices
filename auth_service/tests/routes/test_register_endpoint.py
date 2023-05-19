@@ -4,9 +4,9 @@ from sqlalchemy import text
 from src import Session
 
 
-class TestAuthRoutes:
+class TestRegisterEndpoint:
     '''
-        This test verifies that flask /auth routes works correctly
+        This test verifies the correct operation of the endpoint register
 
         Using the following test cases as a guide:
             - Valid post request for auth/register response status 201
