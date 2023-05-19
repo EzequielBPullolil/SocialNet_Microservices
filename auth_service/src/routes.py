@@ -23,3 +23,13 @@ def register():
             'email': request.get_json()['email']
         }
     }, 201
+
+
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    '''
+        Validates login credentials and 
+        response with token cookie
+    '''
+
+    return {}, 201
