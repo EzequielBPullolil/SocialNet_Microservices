@@ -1,7 +1,9 @@
 import jwt
+import pytest
 from src.helpers.token_manager import TokenManager
 from src.models import AuthToken
 from src import Session
+from src.exceptions import UserNotFoundException
 
 
 class TestTokenManager:
@@ -59,3 +61,23 @@ class TestTokenManager:
             user_id=test_user['user_id']).first()
 
         assert response != None
+
+    def test_parse_invalid_or_unregistered_id_raise_exception(self):
+        '''
+            If parse an invalid user_id raise exception and not generate token
+        '''
+        invalid_user_id = {
+            "user_id": 'notvalidid',
+            "email": 'e@test.com'
+        }
+
+        with pytest.raises(UserNotFoundException):
+            self.token_manager.generate_token(invalid_user_id)
+
+        unregistered_id = {
+            "user_id": 9000,
+            "email": 'e@test.com'
+        }
+
+        with pytest.raises(UserNotFoundException):
+            self.token_manager.generate_token(unregistered_id)
