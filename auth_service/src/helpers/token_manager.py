@@ -1,6 +1,7 @@
 import copy
 import datetime
 import jwt
+from src.helpers.email_manager import EmailManager
 
 from src.helpers.user_verifier import UserVerifier
 from src.models import AuthToken
@@ -13,6 +14,7 @@ class TokenManager:
     authenticating, and persisting the token.
     '''
     user_verifier = UserVerifier()
+    email_manager = EmailManager()
 
     def generate_token(self, credentials):
         '''
@@ -25,6 +27,8 @@ class TokenManager:
         # Verify user_id
         self.user_verifier.verify_by_id(credentials['user_id'])
 
+        self.email_manager.email_belongs_to_user(
+            email=credentials['email'], id=credentials['user_id'])
         # generate token
         payload = self.__generate_payload(credentials)
 
