@@ -21,3 +21,6 @@ logs/
 
 # Ignora las credenciales de OAuth
 client_secrets.json
+
+# Ignore RSA KEYS
+*.pem
