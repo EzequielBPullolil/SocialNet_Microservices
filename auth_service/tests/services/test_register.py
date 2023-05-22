@@ -1,8 +1,9 @@
 from datetime import datetime
+
+import pytest
 from src.helpers.password_manager import PasswordManager
 from src.services.register import register_service
 from src.models import User
-from unittest import TestCase
 from src import Session
 from sqlalchemy import text
 
@@ -29,10 +30,11 @@ class TestRegisterService:
             'email': 'test@email.com'
         }
         register_service(user_data=userData)
-
-        persisted_user = self.session.query(
+        session = Session()
+        persisted_user = session.query(
             User).filter_by(email=userData['email']).first()
-        self.assertIsNotNone(persisted_user)
+        session.close()
+        assert persisted_user != None
 
     def test_cant_register_user_with_the_same_email(self, test_user):
         '''
@@ -56,18 +58,15 @@ class TestRegisterService:
             'email': 'encryptedPasswordUser@email.com'
         }
         register_service(user_data=userData)
-
-        persisted_user = self.session.query(
+        session = Session()
+        persisted_user = session.query(
             User).filter_by(email=userData['email']).first()
-        self.assertIsNotNone(persisted_user)
 
-        self.assertNotEqual(
-            userData['password'], persisted_user.password
-        )
+        assert userData['password'] != persisted_user.password
 
-        self.assertTrue(
-            self.password_manager.check_password(
-                userData['password'],
-                persisted_user.password
-            )
-        )
+        assert self.password_manager.compare(
+            userData['password'],
+            persisted_user.password
+        ) == True
+
+        session.close()
