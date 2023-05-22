@@ -3,7 +3,7 @@ import pytest
 from src.helpers.token_manager import TokenManager
 from src.models import AuthToken
 from src import Session
-from src.exceptions import UserNotFoundException
+from src.exceptions import UserNotFoundException, InvalidParameter
 
 
 class TestTokenManager:
@@ -81,3 +81,15 @@ class TestTokenManager:
 
         with pytest.raises(UserNotFoundException):
             self.token_manager.generate_token(unregistered_id)
+
+    def test_passing_an_email_not_related_to_the_id_throws_an_exception(self, test_user):
+        '''
+        Verify that if we pass a valid id but an email not related to the user throws an exception
+        '''
+        invalid_email = {
+            "user_id": test_user['user_id'],
+            "email": 'e@test.com'
+        }
+
+        with pytest.raises(InvalidParameter):
+            self.token_manager.generate_token(invalid_email)
