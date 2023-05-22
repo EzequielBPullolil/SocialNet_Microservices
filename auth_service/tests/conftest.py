@@ -34,8 +34,7 @@ def test_user():
     user = User(
         name='',
         email=email,
-        password=password_manager.encrypt_password(password),
-        created_at=datetime.now()
+        password=password_manager.encrypt_password(password)
     )
     session.add(user)
     session.commit()
