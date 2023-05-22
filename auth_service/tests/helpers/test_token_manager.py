@@ -1,5 +1,7 @@
 import jwt
 from src.helpers.token_manager import TokenManager
+from src.models import AuthToken
+from src import Session
 
 
 class TestTokenManager:
@@ -41,3 +43,19 @@ class TestTokenManager:
 
         assert decoded_token['user_id'] == credentials['user_id']
         assert decoded_token['email'] == credentials['email']
+
+    def test_auth_token_is_persisted(self, test_user):
+        '''
+            Verify if after generate token is persisted auth_token row 
+            with test_user.id
+        '''
+        credentials = {
+            "user_id": test_user['user_id'],
+            "email": test_user['email']
+        }
+        self.token_manager.generate_token(credentials)
+        session = Session()
+        response = session.query(AuthToken).filter_by(
+            user_id=test_user['user_id']).first()
+
+        assert response != None
