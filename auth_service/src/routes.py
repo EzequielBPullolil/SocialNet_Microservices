@@ -1,9 +1,8 @@
-
-from src.exceptions import InvalidEschema
+from src.services.login import LoginService
 from src.middlewares.validate_fields import validate_user_fields_middleware
-from src.validation_schemas import validate_user_schema
 from flask import Blueprint, request
 from .services.register import register_service
+from src.exceptions import BadLoginCredentials
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -31,5 +30,10 @@ def login():
         Validates login credentials and 
         response with token cookie
     '''
-
-    return {}, 201
+    try:
+        login_service = LoginService()
+        login_service.login(request.get_json())
+        return {
+        }, 201
+    except BadLoginCredentials:
+        return {}, 400
