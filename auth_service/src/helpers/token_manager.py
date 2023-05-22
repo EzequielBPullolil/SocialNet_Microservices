@@ -20,10 +20,17 @@ class TokenManager:
 
     def generate_token(self, credentials):
         '''
-          Generate token and persist in database 
+          Generate a token and persist it in the database related to the user_Id 
 
-          if not exist user with the user_id parsed in credentials param
-          raise exception
+          Args: 
+            credentials (dict): Credentials to generate a token
+              The expected keys are:
+                - 'email': The user email
+                - 'user_id': The user id
+              The optionals keys are
+                - 'exp': Allows specify how long the token expires
+          Returns: 
+            str: The generated token
         '''
 
         # Verify user_id
