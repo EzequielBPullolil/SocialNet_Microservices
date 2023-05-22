@@ -23,3 +23,7 @@ class InvalidEschema(RequestExceptions):
 
 class BadLoginCredentials(RequestExceptions):
     pass
+
+
+class UserNotFoundException(Exception):
+    pass

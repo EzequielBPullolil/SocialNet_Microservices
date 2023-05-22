@@ -1,5 +1,6 @@
 from src import Session
 from src.models import User
+from src.exceptions import UserNotFoundException
 
 
 class UserVerifier:
@@ -13,9 +14,12 @@ class UserVerifier:
 
         if not exist raises exception
         '''
+        if type(id) != int:
+            raise UserNotFoundException
+
         session = Session()
         user = session.query(User).filter_by(id=id).first()
         session.close()
 
         if (user == None):
-            raise Exception
+            raise UserNotFoundException
