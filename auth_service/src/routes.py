@@ -1,8 +1,9 @@
-from src.services.login import LoginService
-from src.middlewares.validate_fields import validate_user_fields_middleware
 from flask import Blueprint, request
-from .services.register import register_service
+from .services.login import LoginService
+from .services.register import RegisterService
+
 from src.exceptions import BadLoginCredentials
+from src.middlewares.validate_fields import validate_user_fields_middleware
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -12,15 +13,12 @@ def register():
     '''
         Persist and user before validate_fields_middleware
     '''
-    user_id = register_service(user_data=request.get_json())
+    register_service = RegisterService()
+    user_data = register_service.register(request.get_json())
     return {
         'status': 'success',
         'message': 'User successfully registered',
-        'data': {
-            'id': user_id,
-            'name': request.get_json()['name'],
-            'email': request.get_json()['email']
-        }
+        'data': user_data
     }, 201
 
 

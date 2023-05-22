@@ -1,7 +1,6 @@
 from src.exceptions import AlreadyRegisteredEmail
 from src import Session
 from src.models import User
-import datetime
 
 from src.helpers.email_manager import EmailManager
 from src.helpers.password_manager import PasswordManager
