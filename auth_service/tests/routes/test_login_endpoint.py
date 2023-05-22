@@ -23,6 +23,12 @@ class TestLoginEndpoint:
         response = client.post('/auth/login', json=test_user)
         assert response.status_code == 201
 
+        json_body = response.get_json()
+
+        assert json_body['status'] == 'success'
+        assert json_body['message'] == 'Successful login'
+        assert json_body['token'] != None
+
     def test_request_with_bad_credentials_response_with_status_400(self, client):
         '''
           Makes a request with credentials of unregistered user
