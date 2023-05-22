@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from src.helpers.password_manager import PasswordManager
-from src.services.register import register_service
+from src.services.register import RegisterService
 from src.models import User
 from src import Session
 from sqlalchemy import text
@@ -19,6 +19,7 @@ class TestRegisterService:
             - Cant register the same user email
     '''
     password_manager = PasswordManager()
+    register_service = RegisterService()
 
     def test_successful_register_service_call_persist_a_user_in_the_database(self):
         '''
@@ -29,7 +30,7 @@ class TestRegisterService:
             'password': '',
             'email': 'test@email.com'
         }
-        register_service(user_data=userData)
+        self.register_service.register(userData)
         session = Session()
         persisted_user = session.query(
             User).filter_by(email=userData['email']).first()
@@ -43,8 +44,8 @@ class TestRegisterService:
         '''
 
         with pytest.raises(AlreadyRegisteredEmail):
-            register_service(
-                user_data={
+            self.register_service.register(
+                {
                     'name': '',
                     'password': '',
                     'email': test_user['email']
@@ -57,7 +58,7 @@ class TestRegisterService:
             'password': 'ezequiel_password',
             'email': 'encryptedPasswordUser@email.com'
         }
-        register_service(user_data=userData)
+        self.register_service.register(userData)
         session = Session()
         persisted_user = session.query(
             User).filter_by(email=userData['email']).first()
