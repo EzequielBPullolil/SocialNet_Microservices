@@ -62,8 +62,9 @@ class TokenManager:
         '''
 
         payload = copy.copy(credentials)
-        payload['exp'] = datetime.timedelta(
-            minutes=30) + datetime.datetime.utcnow()
+        if (not 'exp' in credentials):
+            payload['exp'] = datetime.timedelta(
+                minutes=30) + datetime.datetime.utcnow()
 
         return payload
 
