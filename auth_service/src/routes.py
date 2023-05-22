@@ -34,6 +34,9 @@ def login():
         login_service = LoginService()
         login_service.login(request.get_json())
         return {
+            'status': 'success',
+            'message': 'Successful login',
+            'token': ''
         }, 201
     except BadLoginCredentials:
         return {}, 400
