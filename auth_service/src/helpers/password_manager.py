@@ -14,9 +14,9 @@ class PasswordManager:
 
         return hashed_password.decode('utf-8')
 
-    def check_password(self, password: str, hashed_password: str) -> bool:
+    def compare(self, password: str, hashed_password: str) -> bool:
         '''
-            Return true if the password is the same
+            Compare the clean password with the encrypted one
         '''
         return bcrypt.checkpw(
             password.encode('utf-8'),
