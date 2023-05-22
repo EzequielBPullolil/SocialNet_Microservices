@@ -19,3 +19,7 @@ class InvalidEschema(RequestExceptions):
         super().__init__(*args)
         self.invalid_params = invalid_params
         self.missing_params = missing_params
+
+
+class BadLoginCredentials(RequestExceptions):
+    pass
