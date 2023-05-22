@@ -23,8 +23,7 @@ def register_service(user_data: dict):
 
     user = User(name=user_data['name'],
                 email=user_data['email'],
-                password=encrypted_password,
-                created_at=datetime.datetime.now())
+                password=encrypted_password)
 
     session = Session()
     session.add(user)
