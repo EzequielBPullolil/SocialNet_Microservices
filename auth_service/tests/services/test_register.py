@@ -9,7 +9,7 @@ from sqlalchemy import text
 from src.exceptions import AlreadyRegisteredEmail
 
 
-class TestRegisterService(TestCase):
+class TestRegisterService:
     '''
         This test verifies that RegisterService works correctly
 
@@ -17,27 +17,7 @@ class TestRegisterService(TestCase):
             - Successful register_service call persists a user in the database
             - Cant register the same user email
     '''
-
-    def setUp(self) -> None:
-        self.session = Session()
-        self.registeredEmail = 'aregistered_email@test.com'
-
-        self.session.add(
-            User(
-                '',
-                self.registeredEmail,
-                '',
-                datetime.now()
-            )
-        )
-        self.session.commit()
-        self.password_manager = PasswordManager()
-
-    def tearDown(self) -> None:
-        self.session.execute(
-            text('DELETe FROM "users"')
-        )
-        self.session.commit()
+    password_manager = PasswordManager()
 
     def test_successful_register_service_call_persist_a_user_in_the_database(self):
         '''
