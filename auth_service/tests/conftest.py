@@ -1,9 +1,32 @@
 from datetime import datetime
 import pytest
+from sqlalchemy import text
 from src import Session
 from src.app import app
 from src.helpers.password_manager import PasswordManager
 from src.models import User
+
+
+def pytest_configure():
+    '''
+        Delete all table rows
+    '''
+    session = Session()
+
+    session.execute(
+        text('DELETE FROM auth_token')
+    )
+
+    session.execute(
+        text('DELETE FROM users')
+    )
+
+    session.commit()
+    session.close()
+
+    print("\n")
+    print('DB RESET')
+    print("\n")
 
 
 @pytest.fixture
