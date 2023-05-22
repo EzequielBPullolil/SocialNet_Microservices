@@ -2,6 +2,7 @@ import copy
 import datetime
 import jwt
 from src.helpers.email_manager import EmailManager
+from src.helpers.rsa_manager import RsaManager
 
 from src.helpers.user_verifier import UserVerifier
 from src.models import AuthToken
@@ -15,6 +16,7 @@ class TokenManager:
     '''
     user_verifier = UserVerifier()
     email_manager = EmailManager()
+    rsa_manager = RsaManager()
 
     def generate_token(self, credentials):
         '''
@@ -32,7 +34,9 @@ class TokenManager:
         # generate token
         payload = self.__generate_payload(credentials)
 
-        token = jwt.encode(payload, self.__private_key(), algorithm='RS256')
+        token = jwt.encode(payload,
+                           self.rsa_manager.get_private_key(),
+                           algorithm='RS256')
         # persist auth_token
 
         self.__persist_auth_token(token, credentials['user_id'])
@@ -62,7 +66,9 @@ class TokenManager:
         '''
         session = Session()
         session.add(
-            AuthToken(user_id=user_id, token=token)
+            AuthToken(user_id=user_id,
+                      token=token,
+                      public_key_rsa=self.rsa_manager.get_public_key())
         )
 
         session.commit()
