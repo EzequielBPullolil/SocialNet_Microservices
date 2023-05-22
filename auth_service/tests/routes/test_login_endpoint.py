@@ -15,35 +15,20 @@ class TestLoginEndpoint:
       - Making a request to the login endpoint with the credentials of a user who is already logged in closes the previous session
     '''
 
-    def generate_user_credentials(self):
-        '''
-          Persist an user and save they
-          login credentials 
-        '''
-        password_manager = PasswordManager()
-        email = 'user_login_test@loginendpoint_test.com',
-        password = 'password_test'
-
-        session = Session()
-        user = User(
-            name='',
-            email=email,
-            password=password_manager.encrypt_password(password),
-            created_at=datetime.now()
-        )
-        session.add(user)
-        session.commit()
-        self.user_credentials = {
-            'email': email,
-            'password': password
-        }
-        session.close()
-
-    def test_valid_request_for_login_endpoint_response_http_status_201(self, client):
+    def test_valid_request_response_http_status_201(self, client, test_user):
         '''
           Makes a request to the endpoint login with valid user credentials
           and verify
         '''
-        self.generate_user_credentials()
-        response = client.post('/auth/login', json=self.user_credentials)
+        response = client.post('/auth/login', json=test_user)
         assert response.status_code == 201
+
+    def test_request_with_bad_credentials_response_with_status_400(self, client):
+        '''
+          Makes a request with credentials of unregistered user
+        '''
+        response = client.post('/auth/login', json={
+            'email': 'no_registeredemail@test.com',
+            'password': 'a-asd__sadadd'
+        })
+        assert response.status_code == 400
