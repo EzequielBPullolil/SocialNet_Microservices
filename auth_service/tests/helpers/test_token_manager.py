@@ -1,3 +1,4 @@
+import datetime
 import jwt
 import pytest
 from src.helpers.token_manager import TokenManager
@@ -15,7 +16,7 @@ class TestTokenManager:
               * assertions: 
                 1. is token valid
                 2. is encrypted with RSA
-            - validate_token raise exception if
+            - authenticate_token raise exception if
               - the token is invalid
               - the token is expired
     '''
@@ -93,3 +94,21 @@ class TestTokenManager:
 
         with pytest.raises(InvalidParameter):
             self.token_manager.generate_token(invalid_email)
+
+    def test_authenticate_expired_token_raise_exception(self, test_user):
+        '''
+            Generate token with inmediate expire and 
+            verify if authenticated_token raise exception
+        '''
+        credentials = {
+            "user_id": test_user['user_id'],
+            "email": test_user['email'],
+            "exp":  datetime.timedelta(
+                milliseconds=1) + datetime.datetime.utcnow()
+        }
+
+        expired_token = self.token_manager.generate_token(credentials)
+        assert expired_token != None
+
+        with pytest.raises(jwt.ExpiredSignatureError):
+            self.token_manager.authenticate_token(expired_token)
