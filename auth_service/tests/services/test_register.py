@@ -34,18 +34,18 @@ class TestRegisterService:
             User).filter_by(email=userData['email']).first()
         self.assertIsNotNone(persisted_user)
 
-    def test_cant_register_user_with_the_same_email(self):
+    def test_cant_register_user_with_the_same_email(self, test_user):
         '''
             Call register_service parse an already registered email
             raises exception
         '''
 
-        with self.assertRaises(AlreadyRegisteredEmail):
+        with pytest.raises(AlreadyRegisteredEmail):
             register_service(
                 user_data={
                     'name': '',
                     'password': '',
-                    'email': self.registeredEmail
+                    'email': test_user['email']
                 }
             )
 
