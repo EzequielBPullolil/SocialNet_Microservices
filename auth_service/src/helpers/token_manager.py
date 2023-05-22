@@ -49,12 +49,15 @@ class TokenManager:
         self.__persist_auth_token(token, credentials['user_id'])
         return token
 
-    def __private_key(self):
+    def authenticate_token(self, token):
         '''
-          Describe the private RSA key
+          Authentica el token 
         '''
-        with open('private_key.pem', 'rb') as f:
-            return f.read()
+        finded_token = self.__find_token_in_db(token)
+        public_key = finded_token.public_key_rsa
+        jwt.decode(finded_token.token,
+                   public_key,
+                   algorithms=['RS256'])
 
     def __generate_payload(self, credentials):
         '''
@@ -81,3 +84,13 @@ class TokenManager:
 
         session.commit()
         session.close()
+
+    def __find_token_in_db(self, token):
+        '''
+          Find the token in auth_token table
+        '''
+        session = Session()
+
+        token = session.query(AuthToken).filter_by(token=token).first()
+        session.close()
+        return token
