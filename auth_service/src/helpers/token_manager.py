@@ -51,7 +51,9 @@ class TokenManager:
 
     def authenticate_token(self, token):
         '''
-          Authentica el token 
+          Authenticates the token passed by parameter using its rsa public key
+
+          The rsa public key is obtained from the token database registry.
         '''
         finded_token = self.__find_token_in_db(token)
         public_key = finded_token.public_key_rsa
@@ -61,7 +63,16 @@ class TokenManager:
 
     def __generate_payload(self, credentials):
         '''
-          Generates payload for token generation
+          Generates a payload of the credentials.
+          By default, if the dictation credentials do not have the 'exp' key,
+          it generates a token with an expiration time of 30 minutes.
+          Args: 
+            credentials (dict): Credentials to generate a token
+              The expected keys are:
+                - 'email': The user email
+                - 'user_id': The user id
+              The optionals keys are
+                - 'exp': Allows specify how long the token expires
         '''
 
         payload = copy.copy(credentials)
@@ -73,7 +84,13 @@ class TokenManager:
 
     def __persist_auth_token(self, token, user_id):
         '''
-          Persist auth_token row with token, user_id and date 
+          Persist the JWT token in the auth token table with the RSA Public key
+
+          Args:
+            - token: The generated JWT token
+            - user_id: The user id
+
+          Returns; None
         '''
         session = Session()
         session.add(
@@ -87,7 +104,13 @@ class TokenManager:
 
     def __find_token_in_db(self, token):
         '''
-          Find the token in auth_token table
+          Looks up the token record in the AuthToken table and returns it
+
+          Args:
+            - token(str): The token that is stored in auth_token
+
+          Return: 
+            - AuthToken
         '''
         session = Session()
 
