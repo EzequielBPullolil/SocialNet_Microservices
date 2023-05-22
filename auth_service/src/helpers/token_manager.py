@@ -4,6 +4,7 @@ import jwt
 
 from src.helpers.user_verifier import UserVerifier
 from src.models import AuthToken
+from src import Session
 
 
 class TokenManager:
@@ -29,6 +30,8 @@ class TokenManager:
 
         token = jwt.encode(payload, self.__private_key(), algorithm='RS256')
         # persist auth_token
+
+        self.__persist_auth_token(token, credentials['user_id'])
         return token
 
     def __private_key(self):
@@ -48,3 +51,15 @@ class TokenManager:
             minutes=30) + datetime.datetime.utcnow()
 
         return payload
+
+    def __persist_auth_token(self, token, user_id):
+        '''
+          Persist auth_token row with token, user_id and date 
+        '''
+        session = Session()
+        session.add(
+            AuthToken(user_id=user_id, token=token)
+        )
+
+        session.commit()
+        session.close()
