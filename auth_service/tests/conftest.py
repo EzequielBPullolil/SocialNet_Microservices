@@ -39,9 +39,10 @@ def test_user():
     )
     session.add(user)
     session.commit()
-
+    id = user.id
     session.close()
     return {
+        'user_id': id,
         'email': email,
         'password': password
     }
